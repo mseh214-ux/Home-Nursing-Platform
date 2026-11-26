@@ -1,24 +1,31 @@
+import { useState } from 'react'
 import { services } from '../data/services'
 
 function Booking() {
 
   const WHATSAPP_NUMBER = '201021323348'
 
- function handleBooking(e) {
-  e.preventDefault()
+  const [loading, setLoading] = useState(false)
 
-  const form = e.currentTarget
-  const data = new FormData(form)
+  function handleBooking(e) {
+    e.preventDefault()
 
-  const name = data.get('name')
-  const phone = data.get('phone')
-  const service = data.get('service')
-  const address = data.get('address')
-  const date = data.get('date')
-  const time = data.get('time')
-  const notes = data.get('notes')
+    if (loading) return
 
-  const message = `طلب حجز خدمة تمريض منزلي
+    const form = e.currentTarget
+    const data = new FormData(form)
+
+    const name = data.get('name')
+    const phone = data.get('phone')
+    const service = data.get('service')
+    const address = data.get('address')
+    const date = data.get('date')
+    const time = data.get('time')
+    const notes = data.get('notes')
+
+    setLoading(true)
+
+    const message = `طلب حجز خدمة تمريض منزلي
 ------------------------
 
 الاسم: ${name}
@@ -29,12 +36,14 @@ function Booking() {
 الوقت: ${time}
 
 تفاصيل إضافية:
-${notes || 'لا توجد تفاصيل إضافية'}`
+${notes || 'لا توجد تفاصيل إضافية'}
+`
 
-  const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`
+    const whatsappURL =
+  `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`
 
-  window.location.href = whatsappURL
-}
+    window.location.href = whatsappURL
+  }
 
   return (
     <section className="booking section" id="booking">
@@ -197,13 +206,20 @@ ${notes || 'لا توجد تفاصيل إضافية'}`
             />
           </div>
 
-          <button type="submit" className="main-button booking-submit">
-            إرسال طلب الحجز عبر واتساب
+          <button
+            type="submit"
+            className="main-button booking-submit"
+            disabled={loading}
+          >
+            {loading
+              ? 'جاري فتح واتساب...'
+              : 'إرسال طلب الحجز عبر واتساب'}
+
             <span> ← </span>
           </button>
 
           <p className="booking-note">
-            سيتم فتح واتساب لمراجعة الطلب وإرساله.
+            سيتم فتح واتساب لإرسال تفاصيل طلبك.
           </p>
 
         </form>
